@@ -9,8 +9,4 @@ export const supabase = createClient(url ?? 'http://invalid.local', anonKey ?? '
   auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
 });
 
-/** Fehlermeldungen aus Supabase/PostgreSQL lesbar machen. */
-export function errorText(e: unknown): string {
-  if (e && typeof e === 'object' && 'message' in e) return String((e as { message: string }).message);
-  return String(e);
-}
+export { errorText } from './errors';

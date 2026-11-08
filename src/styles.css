@@ -38,3 +38,32 @@ header.top { display: flex; justify-content: space-between; align-items: center;
 nav.tabs { display: flex; gap: 4px; padding: 8px 16px 0; overflow-x: auto; border-bottom: 1px solid var(--line); }
 nav.tabs button { border: none; border-bottom: 3px solid transparent; border-radius: 0; white-space: nowrap; }
 nav.tabs button.active { border-bottom-color: var(--accent); font-weight: 600; }
+h3 { font-size: 1.05rem; margin: 0; }
+h4 { font-size: .95rem; margin: 8px 0 0; color: var(--muted); }
+.stack { display: grid; gap: 16px; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.row.spread { justify-content: space-between; }
+.grid2 { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); align-items: end; }
+.card.inset { background: var(--bg); }
+fieldset { border: 1px solid var(--line); border-radius: 8px; padding: 12px; display: grid; gap: 8px; margin: 0; }
+legend { font-weight: 600; padding: 0 4px; }
+.weekgrid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.weekgrid label { font-weight: 400; font-size: .85rem; text-align: center; }
+.weekgrid input { padding: 8px 4px; text-align: center; min-width: 0; }
+@media (max-width: 420px) { .weekgrid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+label.check { display: flex; gap: 8px; align-items: center; font-weight: 400; }
+label.check input { min-height: auto; width: 20px; height: 20px; }
+.warn { color: var(--warn); }
+.note { background: var(--card); border-left: 4px solid var(--accent); padding: 8px 12px; border-radius: 4px; }
+.badge { display: inline-block; margin-left: 8px; padding: 1px 8px; border-radius: 999px; font-size: .75rem; font-weight: 600; background: var(--line); color: var(--fg); vertical-align: middle; }
+ul.versions, ul.people { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+ul.versions li { border-top: 1px solid var(--line); padding-top: 8px; }
+ul.people button { width: 100%; text-align: left; display: grid; gap: 2px; background: var(--card); padding: 12px 16px; }
+ol.steps { display: grid; gap: 8px; padding-left: 20px; }
+pre.sql { white-space: pre-wrap; word-break: break-all; background: var(--bg); border: 1px solid var(--line); padding: 8px; border-radius: 6px; font-size: .8rem; }
+table.plan { width: 100%; border-collapse: collapse; font-size: .92rem; }
+table.plan th, table.plan td { padding: 6px 4px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+table.plan tr.off td { color: var(--muted); }
+table.plan td.actions { white-space: nowrap; text-align: right; }
+table.plan td.actions button { min-height: 32px; padding: 4px 6px; }
+input.small { padding: 6px 8px; min-height: 36px; width: 100%; min-width: 60px; }

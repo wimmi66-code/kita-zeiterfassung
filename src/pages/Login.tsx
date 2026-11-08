@@ -24,9 +24,7 @@ export default function Login() {
     });
     setBusy(false);
     if (error) {
-      setMsg(error.message.includes('Signups not allowed')
-        ? 'Diese Adresse ist nicht freigeschaltet. Bitte an die Leitung wenden.'
-        : errorText(error));
+      setMsg(errorText(error));
       return;
     }
     setSent(true);
@@ -38,7 +36,7 @@ export default function Login() {
     setMsg(null);
     const { error } = await supabase.auth.verifyOtp({ email: email.trim(), token: code.trim(), type: 'email' });
     setBusy(false);
-    if (error) setMsg('Der Code stimmt nicht oder ist abgelaufen.');
+    if (error) setMsg(errorText(error));
   }
 
   return (

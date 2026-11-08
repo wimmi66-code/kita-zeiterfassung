@@ -27,7 +27,8 @@ export function formatDuration(min: number, withPlus = false): string {
 
 /** "7:48" oder "7,8" → Minuten */
 export function parseDuration(s: string): number | null {
-  const t = s.trim().replace(',', '.');
+  const t = s.trim().replace('−', '-').replace(',', '.');
+  if (t === '') return null;
   const hm = /^(-?)(\d+):(\d{2})$/.exec(t);
   if (hm) return (hm[1] ? -1 : 1) * (Number(hm[2]) * 60 + Number(hm[3]));
   const dec = Number(t);

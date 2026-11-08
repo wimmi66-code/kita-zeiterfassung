@@ -3,6 +3,7 @@ import { useAuth } from './auth';
 import { configMissing } from './lib/supabase';
 import Login from './pages/Login';
 import Placeholder from './pages/Placeholder';
+import Stammdaten from './pages/Stammdaten';
 
 type View = 'meine' | 'team' | 'stammdaten' | 'freigegeben';
 
@@ -71,7 +72,7 @@ export default function App() {
       <main>
         {current === 'meine' && <Placeholder title="Meine Zeiten" step="Schritt 4: Monatskalender und Tageserfassung" />}
         {current === 'team' && <Placeholder title={profile.role === 'leitung' ? 'Team' : 'Leitung prüfen'} step="Schritt 5: Übersicht, Prüfung und Freigabe" />}
-        {current === 'stammdaten' && <Placeholder title="Stammdaten" step="Schritt 3: Pseudonyme, Arbeitszeitmodelle, Dienstplan" />}
+        {current === 'stammdaten' && <Stammdaten />}
         {current === 'freigegeben' && <Placeholder title="Freigegebene Monate" step="Schritt 6: Liste, Summen, Eingangsbestätigung" />}
       </main>
     </>
