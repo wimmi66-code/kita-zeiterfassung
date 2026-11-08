@@ -67,3 +67,41 @@ table.plan tr.off td { color: var(--muted); }
 table.plan td.actions { white-space: nowrap; text-align: right; }
 table.plan td.actions button { min-height: 32px; padding: 4px 6px; }
 input.small { padding: 6px 8px; min-height: 36px; width: 100%; min-width: 60px; }
+.monthnav { display: grid; grid-template-columns: 48px 1fr 48px; align-items: center; text-align: center; }
+.monthnav h2 { margin: 0; }
+.monthnav button { font-size: 1.4rem; padding: 0; }
+.status { font-weight: 600; padding: 2px 10px; border-radius: 999px; background: var(--line); }
+.status.s-eingereicht { background: #d8e6f7; color: #123a66; }
+.status.s-freigegeben { background: #d5eedd; color: #14532d; }
+.status.s-zurueckgegeben { background: #fbe7c6; color: #6b4300; }
+.warnbox { border-left-color: var(--warn); }
+.cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.cal-h { text-align: center; font-size: .8rem; color: var(--muted); font-weight: 600; }
+.cal-d { min-height: 52px; padding: 4px 2px; display: grid; grid-template-rows: auto 1fr; justify-items: center; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); }
+.cal-d .n { font-size: .8rem; color: var(--muted); }
+.cal-d .v { font-size: .8rem; font-weight: 600; align-self: center; }
+.cal-d.free { background: transparent; border-style: dashed; opacity: .6; }
+.cal-d.hol { background: var(--card); opacity: .8; }
+.cal-d.done { background: color-mix(in srgb, var(--accent) 18%, var(--bg)); border-color: color-mix(in srgb, var(--accent) 50%, var(--bg)); }
+.cal-d.miss { border-color: var(--danger); border-width: 2px; }
+.cal-d.late { box-shadow: inset 0 -4px 0 var(--warn); }
+.cal-d.today .n { color: var(--accent); font-weight: 700; }
+.cal-d.sel { outline: 3px solid var(--accent); outline-offset: 1px; }
+.legend { display: flex; gap: 6px 10px; flex-wrap: wrap; align-items: center; }
+.lg { display: inline-block; width: 14px; height: 14px; border-radius: 4px; border: 1px solid var(--line); vertical-align: middle; }
+.lg.done { background: color-mix(in srgb, var(--accent) 18%, var(--bg)); }
+.lg.miss { border: 2px solid var(--danger); }
+.lg.hol { background: var(--card); }
+.lg.late { box-shadow: inset 0 -4px 0 var(--warn); }
+dl.sums { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; margin: 0; }
+dl.sums dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+.neg { color: var(--danger); }
+.pos { color: var(--accent); }
+.grid2.times { grid-template-columns: 1fr 1fr; }
+.meter { height: 10px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.meter .fill { height: 100%; background: var(--accent); }
+.meter .fill.warnung { background: var(--warn); }
+.meter .fill.ueberschritten { background: var(--danger); }
+details.card summary { cursor: pointer; }
+table.plan tbody tr { cursor: pointer; }
+.day-editor { scroll-margin-top: 64px; }

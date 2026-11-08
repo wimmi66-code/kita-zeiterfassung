@@ -3,7 +3,7 @@ import { supabase } from './supabase';
 import { makeDate, type IsoDate } from './dates';
 import { generateSchedule, planDay } from './schedule';
 import type {
-  Employee, EmploymentTerms, MonthClosing, Parameter, Profile, ScheduleDay, YearBalance,
+  Employee, EmploymentTerms, MonthClosing, Parameter, Profile, ScheduleDay, TimeEntry, YearBalance,
 } from './types';
 
 function check<T>(res: { data: T | null; error: unknown }): T {
@@ -152,3 +152,39 @@ export async function resetOverride(employee_id: string, day: IsoDate) {
     { employee_id, day, plan_minutes, fixed_start, fixed_end, is_holiday, note, is_override: false },
     { onConflict: 'employee_id,day' }));
 }
+
+// ---------- Zeiteinträge -----------------------------------------------
+export async function loadEntries(employee_id: string, from: IsoDate, to: IsoDate): Promise<TimeEntry[]> {
+  const rows = check(await supabase.from('time_entries').select('*')
+    .eq('employee_id', employee_id).gte('day', from).lte('day', to).order('day')) as TimeEntry[];
+  const t = (x: string | null) => (x ? x.slice(0, 5) : null);
+  return rows.map((r) => ({ ...r, start1: t(r.start1), end1: t(r.end1), start2: t(r.start2), end2: t(r.end2) }));
+}
+
+/** Eigenen Eintrag speichern (nur in offenen Monaten; prüft die Datenbank). */
+export async function saveOwnEntry(e: TimeEntry) {
+  const { employee_id, day, day_type, start1, end1, start2, end2, break_minutes, note } = e;
+  check(await supabase.from('time_entries').upsert(
+    { employee_id, day, day_type, start1, end1, start2, end2, break_minutes, note },
+    { onConflict: 'employee_id,day' }));
+}
+
+export async function deleteOwnEntry(employee_id: string, day: IsoDate) {
+  check(await supabase.from('time_entries').delete().eq('employee_id', employee_id).eq('day', day));
+}
+
+export async function submitMonth(year: number, month: number) {
+  check(await supabase.rpc('submit_month', { p_year: year, p_month: month }));
+}
+
+/** Alles, was für die Monatsansicht einer Person nötig ist (ganzes Jahr wegen Übertrag). */
+export async function loadYearData(employee_id: string, year: number) {
+  const from = makeDate(year, 1, 1);
+  const to = makeDate(year, 12, 31);
+  const [terms, schedule, entries, balance, closings, params] = await Promise.all([
+    loadTerms(employee_id), loadSchedule(employee_id, from, to), loadEntries(employee_id, from, to),
+    loadBalance(employee_id, year), loadClosings(employee_id, year), loadParameters(),
+  ]);
+  return { terms, schedule, entries, balance, closings, params };
+}
+export type YearData = Awaited<ReturnType<typeof loadYearData>>;

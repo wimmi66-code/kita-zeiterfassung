@@ -60,3 +60,8 @@ export function formatDe(s: IsoDate): string {
   const [y, m, d] = s.split('-');
   return `${d}.${m}.${y}`;
 }
+
+/** Heutiges Datum in Europe/Berlin. */
+export function todayIso(): IsoDate {
+  return new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Berlin' }).format(new Date());
+}
