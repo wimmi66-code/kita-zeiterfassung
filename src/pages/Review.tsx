@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
-  correctDeleteEntry, correctEntry, loadYearData, releaseMonth, returnMonth, updateSummary, type YearData,
+  correctDeleteEntry, correctEntry, loadYearData, releaseMonth, returnMonth, submitMonthFor, updateSummary, type YearData,
 } from '../lib/api';
 import { formatDe, makeDate, MONATE, todayIso, weekdayShort } from '../lib/dates';
 import { deadlineState, releaseDeadline } from '../lib/deadline';
@@ -25,6 +25,7 @@ export default function Review({ emp, name, year, month, params, onBack }: Props
   const [data, setData] = useState<YearData | null>(null);
   const [returning, setReturning] = useState(false);
   const [reason, setReason] = useState('');
+  const [onBehalf, setOnBehalf] = useState('Unterschriebener Stundenzettel liegt vor');
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
@@ -129,7 +130,17 @@ export default function Review({ emp, name, year, month, params, onBack }: Props
               </>
             )}
             {(status === 'offen' || status === 'zurueckgegeben') && (
-              <p className="hint">Noch nicht eingereicht{status === 'zurueckgegeben' ? ' (zurückgegeben)' : ''}. Korrekturen sind mit Begründung möglich; freigeben lässt sich der Monat erst nach dem Einreichen.</p>
+              <div className="stack">
+                <p className="hint">Noch nicht eingereicht{status === 'zurueckgegeben' ? ' (zurückgegeben)' : ''}. Freigeben lässt sich der Monat erst nach dem Einreichen.</p>
+                <p className="hint">Liegt der Stundenzettel auf Papier oder als Excel-Datei vor, kannst du den Monat im Auftrag einreichen und danach freigeben.</p>
+                <label>Begründung (steht im Protokoll)
+                  <input value={onBehalf} onChange={(e) => setOnBehalf(e.target.value)} />
+                </label>
+                <button disabled={busy || onBehalf.trim().length < 5 || today < makeDate(year, month + 1, 0)}
+                  onClick={() => act(() => submitMonthFor(emp.id, year, month, onBehalf), 'Im Auftrag eingereicht. Jetzt prüfen und freigeben.')}>
+                  Im Auftrag einreichen
+                </button>
+              </div>
             )}
             {status === 'freigegeben' && (
               <p className="hint">

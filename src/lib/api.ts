@@ -228,3 +228,7 @@ export async function updateSummary(employee_id: string, year: number, month: nu
 export async function acknowledgeMonth(employee_id: string, year: number, month: number) {
   check(await supabase.rpc('acknowledge_month', { p_employee: employee_id, p_year: year, p_month: month }));
 }
+
+export async function submitMonthFor(employee_id: string, year: number, month: number, reason: string) {
+  check(await supabase.rpc('submit_month_for', { p_employee: employee_id, p_year: year, p_month: month, p_reason: reason }));
+}

@@ -217,5 +217,25 @@ insert into public.time_entries (employee_id, day, start1, end1)
 select t.ok((select count(*) = 2 from public.time_entries), 'Nach Rückgabe wieder bearbeitbar');
 reset role;
 
+-- ===================== Im Auftrag einreichen ===========================
+set role authenticated;
+select t.login('00000000-0000-0000-0000-00000000000b');
+select t.fails($$select public.submit_month_for('10000000-0000-0000-0000-000000000003', 2026, 9, 'Papierzettel liegt vor')$$,
+               'Mitarbeitende reichen nicht für andere ein');
+select t.login('00000000-0000-0000-0000-00000000000a');
+select t.fails($$select public.submit_month_for('10000000-0000-0000-0000-000000000003', 2026, 9, '')$$,
+               'Im Auftrag einreichen nur mit Begründung');
+select t.fails($$select public.submit_month_for('10000000-0000-0000-0000-000000000001', 2026, 9, 'eigener Monat')$$,
+               'Leitung reicht eigenen Monat nicht im Auftrag ein');
+select public.submit_month_for('10000000-0000-0000-0000-000000000003', 2026, 9, 'Papierzettel liegt unterschrieben vor');
+select t.ok((select status = 'eingereicht' and submitted_by = '00000000-0000-0000-0000-00000000000a'
+               from public.month_closings where employee_id = '10000000-0000-0000-0000-000000000003' and month = 9),
+            'Leitung hat September für MA-03 im Auftrag eingereicht');
+select t.ok((select reason = 'Papierzettel liegt unterschrieben vor' from public.audit_log
+              where table_name = 'month_closings' order by id desc limit 1),
+            'Begründung im Protokoll');
+select public.release_month('10000000-0000-0000-0000-000000000003', 2026, 9, '{}');
+reset role;
+
 select t.ok((select count(*) >= 8 from public.audit_log), 'Protokoll enthält alle Änderungen');
 \echo 'Alle Tests bestanden.'
