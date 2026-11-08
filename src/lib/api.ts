@@ -3,7 +3,7 @@ import { supabase } from './supabase';
 import { makeDate, type IsoDate } from './dates';
 import { generateSchedule, planDay } from './schedule';
 import type {
-  Employee, EmploymentTerms, MonthClosing, Parameter, Profile, ScheduleDay, TimeEntry, YearBalance,
+  Employee, EmploymentTerms, MonthClosing, MonthSummary, Parameter, Profile, ScheduleDay, TimeEntry, YearBalance,
 } from './types';
 
 function check<T>(res: { data: T | null; error: unknown }): T {
@@ -188,3 +188,43 @@ export async function loadYearData(employee_id: string, year: number) {
   return { terms, schedule, entries, balance, closings, params };
 }
 export type YearData = Awaited<ReturnType<typeof loadYearData>>;
+
+// ---------- Prüfung und Freigabe ---------------------------------------
+export async function reviewableEmployees(): Promise<Employee[]> {
+  return check(await supabase.rpc('reviewable_employees')) as Employee[];
+}
+
+/** Klarnamen (nur für die Leitung lesbar; für andere leer). */
+export async function loadIdentityMap(): Promise<Map<string, string>> {
+  const { data } = await supabase.from('employee_identities').select('employee_id, first_name, last_name');
+  return new Map((data ?? []).map((r: { employee_id: string; first_name: string; last_name: string }) =>
+    [r.employee_id, `${r.first_name} ${r.last_name}`.trim()]));
+}
+
+export async function correctEntry(e: TimeEntry, reason: string) {
+  check(await supabase.rpc('correct_entry', {
+    p_employee: e.employee_id, p_day: e.day, p_day_type: e.day_type,
+    p_start1: e.start1, p_end1: e.end1, p_start2: e.start2, p_end2: e.end2,
+    p_break_minutes: e.break_minutes, p_note: e.note, p_reason: reason,
+  }));
+}
+
+export async function correctDeleteEntry(employee_id: string, day: IsoDate, reason: string) {
+  check(await supabase.rpc('correct_delete_entry', { p_employee: employee_id, p_day: day, p_reason: reason }));
+}
+
+export async function releaseMonth(employee_id: string, year: number, month: number, summary: MonthSummary) {
+  check(await supabase.rpc('release_month', { p_employee: employee_id, p_year: year, p_month: month, p_summary: summary }));
+}
+
+export async function returnMonth(employee_id: string, year: number, month: number, reason: string) {
+  check(await supabase.rpc('return_month', { p_employee: employee_id, p_year: year, p_month: month, p_reason: reason }));
+}
+
+export async function updateSummary(employee_id: string, year: number, month: number, summary: MonthSummary, reason: string) {
+  check(await supabase.rpc('update_summary', { p_employee: employee_id, p_year: year, p_month: month, p_summary: summary, p_reason: reason }));
+}
+
+export async function acknowledgeMonth(employee_id: string, year: number, month: number) {
+  check(await supabase.rpc('acknowledge_month', { p_employee: employee_id, p_year: year, p_month: month }));
+}

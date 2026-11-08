@@ -157,9 +157,10 @@ export default function MonthView(p: Props) {
           <div className="meter" aria-label="Anteil an der Monatsgrenze">
             <div className={`fill ${money.month.level}`} style={{ width: `${Math.min(100, money.month.share * 100)}%` }} />
           </div>
+          {money.month.level === 'keine_grenze' && <p className="warn">Für {year} ist keine Verdienstgrenze hinterlegt (Tabelle parameters).</p>}
           {money.month.level === 'warnung' && <p className="warn">Über 90 % der monatlichen Verdienstgrenze.</p>}
           {money.month.level === 'ueberschritten' && <p className="error">Monatliche Verdienstgrenze überschritten. Bitte mit der Leitung klären.</p>}
-          {money.year.level !== 'ok' && <p className="warn">Jahresverdienst: {Math.round(money.year.share * 100)} % der Jahresgrenze.</p>}
+          {(money.year.level === 'warnung' || money.year.level === 'ueberschritten') && <p className="warn">Jahresverdienst: {Math.round(money.year.share * 100)} % der Jahresgrenze.</p>}
           {flags.length > 0 && (
             <>
               <h4>Aufzeichnungsfrist (§ 17 MiLoG)</h4>

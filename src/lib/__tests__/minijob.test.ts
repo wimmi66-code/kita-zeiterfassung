@@ -45,6 +45,7 @@ describe('Verdienstgrenze Minijob', () => {
     expect(checkLimit(56970, 63300, 0.9).level).toBe('warnung');     // genau 90 %
     expect(checkLimit(63300, 63300, 0.9).level).toBe('warnung');     // genau an der Grenze
     expect(checkLimit(63301, 63300, 0.9).level).toBe('ueberschritten');
+    expect(checkLimit(60000, 0, 0.9).level).toBe('keine_grenze');   // kein Parameter für das Jahr
   });
 
   it('Mindestlohnprüfung', () => {

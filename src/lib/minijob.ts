@@ -23,7 +23,7 @@ export function earningsCents(days: Pick<DayResult, 'day' | 'ist'>[], terms: Emp
   return Math.round(cents);
 }
 
-export type LimitLevel = 'ok' | 'warnung' | 'ueberschritten';
+export type LimitLevel = 'ok' | 'warnung' | 'ueberschritten' | 'keine_grenze';
 
 export interface LimitCheck {
   earned: number;
@@ -33,7 +33,8 @@ export interface LimitCheck {
 }
 
 export function checkLimit(earnedCents: number, limitCents: number, warnShare: number): LimitCheck {
-  const share = limitCents > 0 ? earnedCents / limitCents : 0;
+  if (limitCents <= 0) return { earned: earnedCents, limit: 0, share: 0, level: 'keine_grenze' };
+  const share = earnedCents / limitCents;
   const level: LimitLevel = earnedCents > limitCents ? 'ueberschritten' : share >= warnShare ? 'warnung' : 'ok';
   return { earned: earnedCents, limit: limitCents, share, level };
 }
