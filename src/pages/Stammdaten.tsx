@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { createEmployee, loadEmployees, loadParameters, nextPseudonym, type EmployeeRow } from '../lib/api';
 import { errorText } from '../lib/errors';
 import type { Parameter } from '../lib/types';
+import Import from './stammdaten/Import';
 import PersonDetail from './stammdaten/PersonDetail';
 
 export default function Stammdaten() {
@@ -9,6 +10,7 @@ export default function Stammdaten() {
   const [params, setParams] = useState<Parameter[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
+  const [importing, setImporting] = useState(false);
 
   async function reload() {
     const [e, p] = await Promise.all([loadEmployees(), loadParameters()]);
@@ -33,6 +35,8 @@ export default function Stammdaten() {
   }
 
   const emp = list.find((e) => e.id === selected);
+
+  if (importing) return <Import employees={list} onClose={() => setImporting(false)} />;
 
   if (emp) {
     return (
@@ -59,7 +63,10 @@ export default function Stammdaten() {
           </li>
         ))}
       </ul>
-      <button className="primary" onClick={add}>Person hinzufügen</button>
+      <div className="row">
+        <button className="primary" onClick={add}>Person hinzufügen</button>
+        <button onClick={() => setImporting(true)}>Zeiten importieren (CSV)</button>
+      </div>
       {msg && <p className="error">{msg}</p>}
     </div>
   );
