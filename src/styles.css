@@ -112,3 +112,4 @@ ul.team { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
 .team-row.f-erledigt { border-left-color: var(--accent); }
 .errbox { border-left-color: var(--danger); color: var(--danger); }
 code { font-size: .85em; word-break: break-all; }
+.scroll { overflow-x: auto; }

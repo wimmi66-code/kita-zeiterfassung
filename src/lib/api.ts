@@ -232,3 +232,29 @@ export async function acknowledgeMonth(employee_id: string, year: number, month:
 export async function submitMonthFor(employee_id: string, year: number, month: number, reason: string) {
   check(await supabase.rpc('submit_month_for', { p_employee: employee_id, p_year: year, p_month: month, p_reason: reason }));
 }
+
+// ---------- Vorstand: freigegebene Monate --------------------------------
+/** Alle für den Betrachter sichtbaren Abschlüsse eines Jahres (Vorstand: nur freigegebene). */
+export async function loadReleasedYear(year: number) {
+  const from = makeDate(year, 1, 1);
+  const to = makeDate(year, 12, 31);
+  const [emps, closings] = await Promise.all([
+    supabase.from('employees').select('id, pseudonym, active').order('pseudonym'),
+    supabase.from('month_closings').select('*').eq('year', year).eq('status', 'freigegeben'),
+  ]);
+  return {
+    employees: check(emps) as Employee[],
+    closings: check(closings) as MonthClosing[],
+    from, to,
+  };
+}
+
+/** Tageswerte eines freigegebenen Monats (RLS liefert dem Vorstand nur freigegebene Monate). */
+export async function loadReleasedMonth(employee_id: string, year: number, month: number) {
+  const from = makeDate(year, month, 1);
+  const to = makeDate(year, month + 1, 0);
+  const [schedule, entries] = await Promise.all([
+    loadSchedule(employee_id, from, to), loadEntries(employee_id, from, to),
+  ]);
+  return { schedule, entries };
+}

@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { useAuth } from './auth';
 import { configMissing } from './lib/supabase';
 import Login from './pages/Login';
-import Placeholder from './pages/Placeholder';
 import Stammdaten from './pages/Stammdaten';
 import MeineZeiten from './pages/MeineZeiten';
 import Team from './pages/Team';
+import Freigaben from './pages/Freigaben';
 
 type View = 'meine' | 'team' | 'stammdaten' | 'freigegeben';
 
@@ -75,7 +75,7 @@ export default function App() {
         {current === 'meine' && profile.employee_id && <MeineZeiten employeeId={profile.employee_id} />}
         {current === 'team' && <Team />}
         {current === 'stammdaten' && <Stammdaten />}
-        {current === 'freigegeben' && <Placeholder title="Freigegebene Monate" step="Schritt 6: Liste, Summen, Eingangsbestätigung" />}
+        {current === 'freigegeben' && <Freigaben />}
       </main>
     </>
   );
