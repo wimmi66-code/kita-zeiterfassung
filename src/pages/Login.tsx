@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { errorText, supabase } from '../lib/supabase';
 
 // Anmeldung per E-Mail: Link anklicken ODER 6-stelligen Code eintippen.
@@ -10,6 +10,15 @@ export default function Login() {
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+
+  // Fehler aus einem abgelaufenen oder schon benutzten E-Mail-Link (steht in der Adresse)
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.hash.slice(1) || window.location.search.slice(1));
+    if (p.get('error') || p.get('error_code')) {
+      setMsg('Der Link aus der E-Mail ist abgelaufen oder wurde schon benutzt. Bitte einen neuen Link anfordern und den Code aus der E-Mail hier eintippen.');
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+  }, []);
 
   async function requestLink(ev: FormEvent) {
     ev.preventDefault();
