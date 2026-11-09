@@ -9,6 +9,8 @@ import { termsFor } from '../lib/schedule';
 import { formatDuration } from '../lib/time';
 import { isMinijob, STATUS_LABEL, type Employee, type MonthStatus, type Parameter } from '../lib/types';
 import Review from './Review';
+import { useAuth } from '../auth';
+import YearCsvButton from './zeiten/YearCsvButton';
 
 interface Row {
   emp: Employee;
@@ -32,6 +34,7 @@ function prevMonth(today: string) {
 
 export default function Team() {
   const today = todayIso();
+  const { profile } = useAuth();
   const [ym, setYm] = useState(() => prevMonth(today));
   const [rows, setRows] = useState<Row[] | null>(null);
   const [params, setParams] = useState<Parameter[]>([]);
@@ -134,6 +137,7 @@ export default function Team() {
         </ul>
       )}
       {msg && <p className="error">{msg}</p>}
+      {profile?.role === 'leitung' && <YearCsvButton year={ym.year} mode="leitung" />}
     </div>
   );
 }

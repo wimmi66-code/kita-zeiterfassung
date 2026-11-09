@@ -24,7 +24,12 @@ export default defineConfig({
         icons: [{ src: 'icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' }],
       },
       // Keine API-Antworten cachen: Zeitdaten kommen immer frisch aus Supabase.
-      workbox: { navigateFallback: `${base}index.html`, runtimeCaching: [] },
+      workbox: {
+        navigateFallback: `${base}index.html`,
+        runtimeCaching: [],
+        // Export-Bibliotheken nur bei Bedarf laden, nicht vorab auf das Handy
+        globIgnores: ['**/exceljs*.js', '**/jspdf*.js', '**/html2canvas*.js', '**/purify*.js', '**/index.es-*.js'],
+      },
     }),
   ],
   test: { include: ['src/**/*.test.ts'] },

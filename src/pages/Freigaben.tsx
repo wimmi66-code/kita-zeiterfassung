@@ -5,6 +5,9 @@ import { formatDe, MONATE, todayIso, weekdayShort } from '../lib/dates';
 import { errorText } from '../lib/errors';
 import { formatEuro } from '../lib/minijob';
 import { formatDuration } from '../lib/time';
+import { buildMonthSheet } from '../lib/export/monthSheet';
+import ExportButtons from './zeiten/ExportButtons';
+import YearCsvButton from './zeiten/YearCsvButton';
 import { DAY_TYPE_LABEL, type Employee, type MonthClosing, type ScheduleDay, type TimeEntry } from '../lib/types';
 
 interface Detail {
@@ -105,7 +108,10 @@ export default function Freigaben() {
         {!detail.closing.acknowledged_at && (
           <button className="primary" disabled={busy} onClick={() => ack([detail.closing])}>Eingang bestätigen</button>
         )}
-        <p className="hint">Download als PDF und Excel folgt in Schritt 7.</p>
+        <ExportButtons make={() => buildMonthSheet({
+          pseudonym: detail.emp.pseudonym, year: detail.closing.year, month: detail.closing.month,
+          days: m.days, carryIn: s?.carry_in_min ?? 0, closing: detail.closing,
+        })} />
         {msg && <p className="note">{msg}</p>}
       </div>
     );
@@ -163,6 +169,7 @@ export default function Freigaben() {
         );
       })}
       {msg && <p className="note" role="status">{msg}</p>}
+      {months.length > 0 && <YearCsvButton year={year} mode="vorstand" />}
     </div>
   );
 }

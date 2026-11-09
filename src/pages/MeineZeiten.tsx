@@ -2,10 +2,13 @@ import { useCallback, useEffect, useState } from 'react';
 import { deleteOwnEntry, loadYearData, saveOwnEntry, submitMonth, type YearData } from '../lib/api';
 import { formatDe, makeDate, MONATE, todayIso } from '../lib/dates';
 import { errorText } from '../lib/errors';
+import { useAuth } from '../auth';
+import ExportButtons, { sheetFromYearData } from './zeiten/ExportButtons';
 import MonthView, { monthStatus } from './zeiten/MonthView';
 
 export default function MeineZeiten({ employeeId }: { employeeId: string }) {
   const today = todayIso();
+  const { employee } = useAuth();
   const [ym, setYm] = useState(() => ({ year: Number(today.slice(0, 4)), month: Number(today.slice(5, 7)) }));
   const [data, setData] = useState<YearData | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
@@ -77,6 +80,9 @@ export default function MeineZeiten({ employeeId }: { employeeId: string }) {
           <button className="primary" disabled={!canSubmit || busy} onClick={submit}>Monat einreichen</button>
           {!canSubmit && <p className="hint">Einreichen ist ab dem {formatDe(lastDay)} möglich.</p>}
         </div>
+      )}
+      {data && (data.entries.length > 0 || data.schedule.length > 0) && (
+        <ExportButtons make={() => sheetFromYearData(data, employee?.pseudonym ?? '', null, ym.year, ym.month, today)} />
       )}
       {msg && <p className="note" role="status">{msg}</p>}
     </div>

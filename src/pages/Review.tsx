@@ -9,6 +9,7 @@ import { paramAt } from '../lib/minijob';
 import { buildSummary } from '../lib/summary';
 import { formatDuration } from '../lib/time';
 import type { Employee, Parameter } from '../lib/types';
+import ExportButtons, { sheetFromYearData } from './zeiten/ExportButtons';
 import MonthView from './zeiten/MonthView';
 
 interface Props {
@@ -150,6 +151,11 @@ export default function Review({ emp, name, year, month, params, onBack }: Props
               </p>
             )}
             {msg && <p className="note" role="status">{msg}</p>}
+          </section>
+
+          <section className="card">
+            <ExportButtons make={() => sheetFromYearData(data, emp.pseudonym, name, year, month, today)} />
+            {name && <p className="hint">Der Nachweis enthält den Klarnamen, weil du ihn als Leitung siehst.</p>}
           </section>
         </>
       )}
